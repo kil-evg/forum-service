@@ -24,7 +24,16 @@ public class User {
     @Setter
     private String lastName;
     private Set<String> roles = new HashSet<>();
+    @Setter
     private String password;
+
+    public User(String login, String firstName, String lastName, String password) {
+        this.login = login;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.addRole("USER");
+    }
 
     public boolean addRole(String role) {
         return roles.add(role);
