@@ -18,43 +18,43 @@ import lombok.Setter;
 @NoArgsConstructor
 @Document(collection = "posts")
 public class Post {
-    private String id;
-    @Setter
-    private String title;
-    @Setter
-    private String content;
-    @Setter
-    private String author;
-    private LocalDateTime dateCreated = LocalDateTime.now();
-    private Set<String> tags = new HashSet<>();
-    private int likes;
-    private List<Comment> comments = new ArrayList<>();
+	private String id;
+	@Setter
+	private String title;
+	@Setter
+	private String content;
+	@Setter
+	private String author;
+	private LocalDateTime dateCreated = LocalDateTime.now();
+	private Set<String> tags = new HashSet<>();
+	private int likes;
+	private List<Comment> comments = new ArrayList<>();
 
-    public Post(String title, String content, String author, Set<String> tags) {
-        this.title = title;
-        this.content = content;
-        this.author = author;
-        this.tags = tags;
-    }
+	public Post(String title, String content, String author, Set<String> tags) {
+		this.title = title;
+		this.content = content;
+		this.author = author;
+		this.tags = tags;
+	}
 
-    public void addLike() {
-        likes++;
-    }
+	public void addLike() {
+		likes++;
+	}
 
-    public boolean addTag(String tag) {
-        return tags.add(tag);
-    }
+	public boolean addTag(String tag) {
+		return tags.add(tag);
+	}
 
-    public boolean removeTag(String tag) {
-        return tags.remove(tag);
-    }
+	public boolean removeTag(String tag) {
+		return tags.remove(tag);
+	}
 
-    public boolean addComment(Comment comment) {
-        return comments.add(comment);
-    }
+	public boolean addComment(Comment comment) {
+		return comments.add(comment);
+	}
 
-    public boolean removeComment(Comment comment) {
-        return comments.remove(comment);
-    }
+	public boolean removeComment(Comment comment) {
+		return comments.remove(comment);
+	}
 
 }

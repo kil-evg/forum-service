@@ -18,52 +18,52 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/forum")
 public class PostController {
 
-    private final PostService postService;
+	private final PostService postService;
 
-    @PostMapping("/post/{author}")
-    public PostDto addNewPost(@PathVariable String author, @RequestBody NewPostDto newPostDto) {
-        return postService.addNewPost(author, newPostDto);
-    }
+	@PostMapping("/post/{author}")
+	public PostDto addNewPost(@PathVariable String author, @RequestBody NewPostDto newPostDto) {
+		return postService.addNewPost(author, newPostDto);
+	}
 
-    @GetMapping("/post/{id}")
-    public PostDto findPostById(@PathVariable String id) {
-        return postService.findPostById(id);
-    }
+	@GetMapping("/post/{id}")
+	public PostDto findPostById(@PathVariable String id) {
+		return postService.findPostById(id);
+	}
 
-    @DeleteMapping("/post/{id}")
-    public PostDto removePost(@PathVariable String id) {
-        return postService.removePost(id);
-    }
+	@DeleteMapping("/post/{id}")
+	public PostDto removePost(@PathVariable String id) {
+		return postService.removePost(id);
+	}
 
-    @PatchMapping("/post/{id}")
-    public PostDto updatePost(@PathVariable String id, @RequestBody NewPostDto newPostDto) {
-        return postService.updatePost(id, newPostDto);
-    }
+	@PatchMapping("/post/{id}")
+	public PostDto updatePost(@PathVariable String id, @RequestBody NewPostDto newPostDto) {
+		return postService.updatePost(id, newPostDto);
+	}
 
-    @PatchMapping("/post/{id}/comment/{author}")
-    public PostDto addComment(@PathVariable String id, @PathVariable String author, @RequestBody NewCommentDto newCommentDto) {
-        return postService.addComment(id, author, newCommentDto);
-    }
+	@PatchMapping("/post/{id}/comment/{author}")
+	public PostDto addComment(@PathVariable String id, @PathVariable String author, @RequestBody NewCommentDto newCommentDto) {
+		return postService.addComment(id, author, newCommentDto);
+	}
 
-    @PatchMapping("/post/{id}/like")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addLike(@PathVariable String id) {
-        postService.addLike(id);
-    }
+	@PatchMapping("/post/{id}/like")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void addLike(@PathVariable String id) {
+		postService.addLike(id);
+	}
 
-    @GetMapping("/posts/author/{author}")
-    public Iterable<PostDto> findPostsByAuthor(@PathVariable String author) {
-        return postService.findPostsByAuthor(author);
-    }
+	@GetMapping("/posts/author/{author}")
+	public Iterable<PostDto> findPostsByAuthor(@PathVariable String author) {
+		return postService.findPostsByAuthor(author);
+	}
 
-    @GetMapping("/posts/tags")
-    public Iterable<PostDto> findPostsByTags(@RequestParam List<String> values) {
-        return postService.findPostsByTags(values);
-    }
+	@GetMapping("/posts/tags")
+	public Iterable<PostDto> findPostsByTags(@RequestParam List<String> values) {
+		return postService.findPostsByTags(values);
+	}
 
-    @GetMapping("/posts/period")
-    public Iterable<PostDto> findPostsByPeriod(@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo) {
-        return postService.findPostsByPeriod(dateFrom, dateTo);
-    }
+	@GetMapping("/posts/period")
+	public Iterable<PostDto> findPostsByPeriod(@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo) {
+		return postService.findPostsByPeriod(dateFrom, dateTo);
+	}
 
 }

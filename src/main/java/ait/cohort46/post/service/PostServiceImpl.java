@@ -4,15 +4,16 @@ import ait.cohort46.post.dao.PostRepository;
 import ait.cohort46.post.dto.NewCommentDto;
 import ait.cohort46.post.dto.NewPostDto;
 import ait.cohort46.post.dto.PostDto;
+import ait.cohort46.post.dto.exception.PostNotFoundException;
 import ait.cohort46.post.model.Comment;
 import ait.cohort46.post.model.Post;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import ait.cohort46.post.dto.exceptions.PostNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -20,11 +21,9 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final ModelMapper modelMapper;
 
-
     @Override
     public PostDto addNewPost(String author, NewPostDto newPostDto) {
         Post post = modelMapper.map(newPostDto, Post.class);
-        //Post post = new Post(newPostDto.getTitle(), newPostDto.getContent(),author, newPostDto.getTags());
         post.setAuthor(author);
         post = postRepository.save(post);
         return modelMapper.map(post, PostDto.class);
@@ -32,6 +31,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto findPostById(String id) {
+
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         return modelMapper.map(post, PostDto.class);
     }
@@ -39,7 +39,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto removePost(String id) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        //postRepository.deleteById(id);
         postRepository.delete(post);
         return modelMapper.map(post, PostDto.class);
     }
@@ -47,26 +46,28 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto updatePost(String id, NewPostDto newPostDto) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        if (newPostDto.getTitle() != null) {
-            post.setTitle(newPostDto.getTitle());
+        String content = newPostDto.getContent();
+        if (content != null) {
+            post.setContent(content);
         }
-        if (newPostDto.getContent() != null) {
-            post.setContent(newPostDto.getContent());
+        String title = newPostDto.getTitle();
+        if (title != null) {
+            post.setTitle(title);
         }
-        if (newPostDto.getTags() != null) {
-            post.getTags().addAll(newPostDto.getTags());
+        Set<String> tags = newPostDto.getTags();
+        if (tags != null) {
+            tags.forEach(post::addTag);
         }
-        postRepository.save(post);
+        post = postRepository.save(post);
         return modelMapper.map(post, PostDto.class);
     }
 
     @Override
     public PostDto addComment(String id, String author, NewCommentDto newCommentDto) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        Comment comment = modelMapper.map(newCommentDto, Comment.class);
-        comment.setUser(author);
+        Comment comment = new Comment(author, newCommentDto.getMessage());
         post.addComment(comment);
-        postRepository.save(post);
+        post = postRepository.save(post);
         return modelMapper.map(post, PostDto.class);
     }
 
@@ -79,20 +80,22 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Iterable<PostDto> findPostsByAuthor(String author) {
-        return postRepository.findByAuthorIgnoreCase(author);
+        return postRepository.findByAuthorIgnoreCase(author)
+                .map(p -> modelMapper.map(p, PostDto.class))
+                .toList();
     }
 
     @Override
     public Iterable<PostDto> findPostsByTags(List<String> tags) {
         return postRepository.findByTagsInIgnoreCase(tags)
-                .map(post -> modelMapper.map(post, PostDto.class))
+                .map(p -> modelMapper.map(p, PostDto.class))
                 .toList();
     }
 
     @Override
     public Iterable<PostDto> findPostsByPeriod(LocalDate dateFrom, LocalDate dateTo) {
         return postRepository.findByDateCreatedBetween(dateFrom, dateTo)
-                .map(post -> modelMapper.map(post, PostDto.class))
+                .map(p -> modelMapper.map(p, PostDto.class))
                 .toList();
     }
 }
