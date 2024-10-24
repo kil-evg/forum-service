@@ -13,6 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class UserAccountServiceImpl implements UserAccountService {
@@ -29,6 +31,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserAccount userAccount = modelMapper.map(userRegisterDto, UserAccount.class);
         String password = passwordEncoder.encode(userRegisterDto.getPassword());
         userAccount.setPassword(password);
+        userAccount.setPasswordLastChanged(LocalDate.now());
         userAccountRepository.save(userAccount);
         return modelMapper.map(userAccount, UserDto.class);
     }
@@ -79,6 +82,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserAccount userAccount = userAccountRepository.findById(login).orElseThrow(UserNotFoundException::new);
         String password = passwordEncoder.encode(newPassword);
         userAccount.setPassword(password);
+        userAccount.setPasswordLastChanged(LocalDate.now());
         userAccountRepository.save(userAccount);
     }
 }

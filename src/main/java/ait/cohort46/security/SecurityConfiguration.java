@@ -24,6 +24,11 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/account/register", "/forum/posts/**")
                 .permitAll()
+
+                .requestMatchers("/account/password").authenticated()
+                .requestMatchers("/account/**", "/forum/post/**")
+                .access(((authentication, context) -> new AuthorizationDecision(webSecurity.checkPasswordDate(authentication.get().getName()))))
+
                 .requestMatchers("/account/user/{login}/role/{role}")
                 .hasRole(Role.ADMINISTRATOR.name())
                 .requestMatchers(HttpMethod.PATCH, "/account/user/{login}", "/forum/post/{id}/comment/{login}")
