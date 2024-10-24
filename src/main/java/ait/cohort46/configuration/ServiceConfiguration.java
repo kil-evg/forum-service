@@ -4,10 +4,15 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration.AccessLevel;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Service
+@Configuration
+@EnableAspectJAutoProxy
 public class ServiceConfiguration {
+
     @Bean
     ModelMapper getModelMapper() {
         ModelMapper modelMapper = new ModelMapper();
@@ -16,5 +21,10 @@ public class ServiceConfiguration {
                 .setFieldAccessLevel(AccessLevel.PRIVATE)
                 .setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
+    }
+
+    @Bean
+    PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
